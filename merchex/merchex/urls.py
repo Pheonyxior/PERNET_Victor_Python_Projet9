@@ -12,14 +12,14 @@ Class-based views
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path('litrevu/', include('litrevu.urls'))
 """
 from django.contrib import admin
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 
 import authentication.views
-import blog.views
+import litrevu.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,5 +29,21 @@ urlpatterns = [
     ), name='login'),
     path('logout/', LogoutView.as_view(
     ), name='logout'),
-    path('home/', blog.views.home, name='home'),
+    path('signup/', authentication.views.signup_page, name='signup'),
+    path('home/', litrevu.views.home, name='home'),
+    
+    path('tickets/', litrevu.views.ticket_list, name='ticket-list'),
+    path('tickets/<int:id>/', litrevu.views.ticket_detail, name='ticket-detail'),
+    path('tickets/add/', litrevu.views.ticket_create, name='ticket-create'),
+    path('tickets/<int:id>/change/', litrevu.views.ticket_update, name='ticket-update'),
+    path('tickets/<int:id>/delete/', litrevu.views.ticket_delete, name='ticket-delete'),
+
+    path('reviews/', litrevu.views.review_list, name='review-list'),
+    path('reviews/<int:id>/', litrevu.views.review_detail, name='review-detail'),
+    path('reviews/add/', litrevu.views.review_create, name='review-create'),
+    path('reviews/<int:id>/change/', litrevu.views.review_update, name='review-update'),
+    path('reviews/<int:id>/delete/', litrevu.views.review_delete, name='review-delete'),
+
+    path('user_follows/', litrevu.views.user_follows_list, name='user_follows-list'),
+
 ]

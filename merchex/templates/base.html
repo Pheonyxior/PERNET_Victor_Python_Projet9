@@ -1,9 +1,21 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'litrevu/style.css' %}">
+
 <html>
     <head>
-        <title>FotoBlog</title>
+        <title>LITRevu</title>
     </head>
     <body>
-        <h1>FotoBlog</h1>
+        {% if user.is_authenticated %}
+        <nav>
+            <a href="{% url 'home' %}">Acceuil</a>
+            <a href="{% url 'ticket-list' %}">Tickets</a>
+            <a href="{% url 'review-list' %}">Critiques</a>
+            <a href="{% url 'user_follows-list' %}">Abonnements</a>
+        </nav>
+        {% endif %}
+
+        <h1>LITRevu</h1>
         {% block content %}{% endblock content %}
         {% if user.is_authenticated %}
             <p>Vous êtes connecté en tant que {{ request.user }}. 

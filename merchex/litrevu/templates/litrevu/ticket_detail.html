@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ ticket.title }}</h2>
+
+    <ul>
+        <li>Description : {{ ticket.description }}</li>
+        <li>Utilisateur : {{ ticket.user }}</li>
+        
+        <li>Image : <img src="{{ ticket.image }}" alt="Couverture du livre"></li>
+        <li>Heure de création : {{ ticket.time_created }}</li>
+    </ul>
+
+    <a href="{% url 'ticket-update' ticket.id %}">Modifier ce ticket</a>
+    <a href="{% url 'ticket-delete' ticket.id %}">Supprimer ce ticket</a>
+    <a href="{% url 'ticket-list' %}">Retour à tous les ticket</a>
+{% endblock %}

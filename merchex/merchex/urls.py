@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
+from django.conf import settings
+from django.conf.urls.static import static
 
 import authentication.views
 import litrevu.views
@@ -45,5 +47,9 @@ urlpatterns = [
     path('reviews/<int:id>/delete/', litrevu.views.review_delete, name='review-delete'),
 
     path('user_follows/', litrevu.views.user_follows_list, name='user_follows-list'),
+    ]
 
-]
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )

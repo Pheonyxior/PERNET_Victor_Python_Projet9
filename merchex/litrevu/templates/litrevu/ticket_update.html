@@ -4,7 +4,7 @@
 
 <h1>Modification d'un ticket</h1>
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value"Envoyer">

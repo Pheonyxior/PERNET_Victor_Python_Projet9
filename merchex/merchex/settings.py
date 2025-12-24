@@ -84,6 +84,8 @@ DATABASES = {
     }
 }
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR.joinpath('media/')
 
 AUTH_USER_MODEL = 'authentication.User'
 

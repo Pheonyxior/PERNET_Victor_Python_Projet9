@@ -24,11 +24,11 @@ def ticket_detail(request, id):
 @login_required
 def ticket_create(request):
     print(request.method)
-    print(request.POST)
-    print()
     if request.method == 'POST':
-        form = TicketForm(request.POST)
+        print("POST: ", request.POST)
+        form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
+            print("FILES: ", request.FILES)
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
@@ -45,7 +45,7 @@ def ticket_create(request):
 def ticket_update(request, id):
     ticket = Ticket.objects.get(id=id)
     if request.method == 'POST':
-        form = TicketForm(request.POST, instance=ticket)
+        form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             ticket = form.save()
             return redirect('ticket-detail', ticket.id)

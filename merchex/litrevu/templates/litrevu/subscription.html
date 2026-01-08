@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class = 'subscription'>
+    <div class = 'div_title'>Suivre d'autres utilisateurs</div>
+    <div class = 'div_form'>
+        <form method="post">            
+            {% csrf_token %}
+            <div>{{form.username}}</div>
+            <div>
+                <button class="btn" type="submit" >Envoyer</button>     
+            </div>            
+        </form>
+        <div class ="subscription__message">
+            {% if form.errors %}
+                <!-- {{ form.errors }} -->
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="subscription__lists">
+        <div class="subscription__lists__subscriptions">
+            <div class = 'div_title'>Abonnements</div>
+            <table>
+                <!-- for each followed user -->
+                {% for followed_user in followed_users %}
+                <tr>
+                    <td>{{followed_user.followed_user}}</td>
+                    <td><a href="{% url 'unsubscription' followed_user.id %}"><button class="btn" type="button">
+                        Désabonner</button></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="subscription__lists__subscribers">
+            <div class = 'div_title'>Abonnés</div>
+            <table>
+                <!-- for each subscribers user -->
+                {% for subscriber_user in subscriber_users %}
+                <tr>
+                    <td>{{subscriber_user.user}}</td>
+                    {% comment %} <td><a href="{% url 'unsubscription' subscriber_user.id %}"><button class="btn" type="button">
+                        Désabonner</button></a>
+                    </td> {% endcomment %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

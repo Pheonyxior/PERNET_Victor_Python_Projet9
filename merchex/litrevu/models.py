@@ -1,13 +1,25 @@
 from django.db import models
 from django.core import validators
+from PIL import Image
 from authentication.models import User
 
 class Ticket(models.Model):
+    IMAGE_MAX_SIZE = (300, 300)
+
     title = models.fields.CharField(max_length=128)
     description = models.fields.TextField(max_length=2048, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True)
     time_created = models.fields.DateTimeField(auto_now_add=True)
+
+    def resize_image(self):
+        image = Image.open(self.image)
+        image.thumbnail(self.IMAGE_MAX_SIZE)
+        image.save(self.image.path)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
 
 class Review(models.Model):
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
@@ -19,8 +31,19 @@ class Review(models.Model):
     time_created = models.fields.DateTimeField(auto_now_add=True)
 
 class UserFollows(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followed_by')
+    user = models.ForeignKey(to=User,
+                             on_delete=models.CASCADE,
+                             related_name='following')
+    followed_user = models.ForeignKey(to=User,
+                                      on_delete=models.CASCADE,
+                                      related_name='followed_by')
 
     class Meta:
+        # ensures we don't get multiple UserFollows instances
+        # for unique user-user_followed pairs
         unique_together = ('user', 'followed_user', )
+        verbose_name_plural = "users followed"
+
+    def __str__(self) -> str:
+        return "followed user of " + str(self.user) + ": " \
+            + str(self.followed_user)

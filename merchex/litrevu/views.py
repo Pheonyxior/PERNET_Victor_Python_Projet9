@@ -1,9 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 from litrevu.models import Ticket, Review, UserFollows
-from litrevu.forms import TicketForm, ReviewForm, UserFollowsForm
-from authentication.models import User
+from litrevu.forms import TicketForm, ReviewForm, SubscriptionForm
 
 @login_required
 def home(request):
@@ -128,55 +127,27 @@ def review_delete(request, id):
 
 
 @login_required
-def user_follows_list(request):
-    user_list = User.objects.filter(username__icontains='Cléa')
-    user_follows_list = UserFollows.objects.all()
+def subscription(request):
+    followed_users = UserFollows.objects.filter(user=request.user)
+    subscriber_users = UserFollows.objects.filter(
+        followed_user=request.user)
     if request.method == 'POST':
-        form = UserFollowsForm(request.POST)
+        form = SubscriptionForm(request.user, request.POST)
         if form.is_valid():
-            user_follows = form.save(commit=False)
-            user_follows.user = request.user
-            user_follows.save()
-
-            return render(request, 'litrevu/user_follows_list.html', 
-                 {'user_follows_list': user_follows_list, 
-                  'user_list': user_list, 
-                  'form': form,}
-                 )
+            messages.info(request,
+                          'Utilisateur '
+                          + request.POST.get('username') + ' ajouté')
     else:
-        form = UserFollowsForm()
-        return render(request, 'litrevu/user_follows_list.html', 
-                    {'user_follows_list': user_follows_list, 
-                    'user_list': user_list, 
-                    'form': form,}
-                    )
-
-@login_required
-def user_follows_create(request):
-    print(request.method)
-    print(request.POST)
-    print()
-    if request.method == 'POST':
-        form = UserFollowsForm(request.POST)
-        if form.is_valid():
-            user_follows = form.save(commit=False)
-            user_follows.user = request.user
-            user_follows.save()
-            return redirect('user_follows-detail', user_follows.id)
-        else:
-            print("ERROR: ", form.errors)
-    else:
-        form = ReviewForm()
-    return render(request,
-                'litrevu/user_follows_create.html',
-                {'form': form})
-
-@login_required
-def user_follows_delete(request, id):
-    user_follows = UserFollowsForm.objects.get(id=id)
-    if request.method == 'POST':
-        user_follows.delete()
-        return redirect('user_follows-list')
+        form = SubscriptionForm(request.user)
+    context = {'followed_users': followed_users,
+                'subscriber_users': subscriber_users} | {'form': form}
     return render(request, 
-                  'litrevu/user_follows_delete.html', 
-                  {'user_follows': user_follows})
+                 "litrevu/subscription.html",
+                  context=context)
+
+@login_required
+def unsubscribe(request, id):
+    """ remove the id user from the followed user """
+    user = get_object_or_404(UserFollows, id=id)
+    user.delete()
+    return redirect('subscription')

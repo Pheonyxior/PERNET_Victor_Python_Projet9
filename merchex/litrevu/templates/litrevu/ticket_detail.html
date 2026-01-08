@@ -7,11 +7,11 @@
         <li>Description : {{ ticket.description }}</li>
         <li>Utilisateur : {{ ticket.user }}</li>
         
-        <li>Image : 
         {% if ticket.image %}
+        <li>
             <img src="{{ ticket.image.url }}" alt="Couverture du livre">
-        {% endif %}
         </li>
+        {% endif %}
         <li>Heure de création : {{ ticket.time_created }}</li>
     </ul>
 

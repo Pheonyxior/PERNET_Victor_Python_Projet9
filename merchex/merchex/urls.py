@@ -46,7 +46,9 @@ urlpatterns = [
     path('reviews/<int:id>/change/', litrevu.views.review_update, name='review-update'),
     path('reviews/<int:id>/delete/', litrevu.views.review_delete, name='review-delete'),
 
-    path('user_follows/', litrevu.views.user_follows_list, name='user_follows-list'),
+    # path('user_follows/', litrevu.views.user_follows_list, name='user_follows-list'),
+    path('subscribe', litrevu.views.subscription, name='subscription'),
+    path('unsubscribe/<int:id>/', litrevu.views.unsubscribe, name='unsubscription'),
     ]
 
 if settings.DEBUG:

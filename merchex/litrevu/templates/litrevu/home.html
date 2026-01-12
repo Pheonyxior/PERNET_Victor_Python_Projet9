@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
+{% load litrevu_extras %}
 {% block content %}
-    <p>Vous êtes connecté !</p>
+    <h2>Votre flux</h2>
+    <div class="grid-container">
+        {% for post in posts %}
+            {% if post|model_type == 'Ticket' %}
+                {% include 'litrevu/partials/ticket_snippet.html' with ticket=post %}
+            {% elif post|model_type == 'Review' %}
+                {% include 'litrevu/partials/review_snippet.html' with review=post %}
+            {% endif %}
+        {% endfor %}
+    </div>
 
 {% endblock content %}

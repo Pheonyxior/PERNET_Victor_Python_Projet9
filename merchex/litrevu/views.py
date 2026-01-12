@@ -1,4 +1,6 @@
+from itertools import chain
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q, CharField, Value
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from litrevu.models import Ticket, Review, UserFollows
@@ -6,11 +8,41 @@ from litrevu.forms import TicketForm, ReviewForm, SubscriptionForm
 
 @login_required
 def home(request):
-    return render(request, 'litrevu/home.html')
+    print(request.user)
+    followed_users = UserFollows.objects.filter(
+        user=request.user).values_list('followed_user', flat=True)
+    
+    reviews = Review.objects.filter(
+        (Q(user=request.user) | Q(user__in=followed_users)))
+    # reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets_user = Ticket.objects.filter(user=request.user)
+    reviews_from_ticket_user = Review.objects.filter(
+        ticket__in=tickets_user).exclude(pk__in=reviews)
+
+    tickets = Ticket.objects.filter(user__in=followed_users)
+    
+    merge_tickets = chain(tickets, tickets_user)
+    merge_tickets_and_reviews = chain(merge_tickets, reviews)
+    merge_tickets_and_reviews = chain(
+        merge_tickets_and_reviews, reviews_from_ticket_user)
+    
+    posts = sorted(
+        merge_tickets_and_reviews,
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+    context = {
+        'posts': posts,
+    }
+    for post in posts:
+        print(post)
+        
+    return render(request, 'litrevu/home.html', context=context)
 
 @login_required
 def ticket_list(request):
-    tickets = Ticket.objects.all()
+    tickets = Ticket.objects.filter(user=request.user)
     return render(request, 'litrevu/ticket_list.html', {'tickets': tickets})
 
 @login_required
@@ -69,7 +101,7 @@ def ticket_delete(request, id):
 
 @login_required
 def review_list(request):
-    reviews = Review.objects.all()
+    reviews = Review.objects.filter(user=request.user)
     return render(request, 'litrevu/review_list.html', {'reviews': reviews})
 
 @login_required

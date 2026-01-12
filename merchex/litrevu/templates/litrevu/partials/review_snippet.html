@@ -1,0 +1,13 @@
+{% block content %}
+    <h4>Critique : {{ review.headline }}</h2>
+
+    <ul>
+        <li>Contenu : {{ review.body }}</li>
+        <li>Note : {{ review.rating }}</li>
+        {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket %}
+        </li>
+        <li>Utilisateur : {{ review.user }}</li>
+        <li>Heure de création : {{ review.time_created }}</li>
+    </ul>
+
+{% endblock content %}

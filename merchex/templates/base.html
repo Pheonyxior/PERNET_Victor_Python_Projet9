@@ -1,16 +1,17 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'litrevu/style.css' %}">
-
 <html>
     <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'litrevu/style.css' %}">
         <title>LITRevu</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'litrevu/images/favicon.png' %}" >
     </head>
     <body>
         {% if user.is_authenticated %}
         <nav>
-            <a href="{% url 'home' %}">Acceuil</a>
-            <a href="{% url 'ticket-list' %}">Tickets</a>
-            <a href="{% url 'review-list' %}">Critiques</a>
+            <a href="{% url 'home' %}">Flux</a>
+            <a href="{% url 'posts' %}">Posts</a>
+            {% comment %} <a href="{% url 'ticket-list' %}">Tickets</a> {% endcomment %}
+            {% comment %} <a href="{% url 'review-list' %}">Critiques</a> {% endcomment %}
             <a href="{% url 'subscription' %}">Abonnements</a>
         </nav>
         {% endif %}

@@ -32,7 +32,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(
     ), name='logout'),
     path('signup/', authentication.views.signup_page, name='signup'),
+
     path('home/', litrevu.views.home, name='home'),
+    path('posts/', litrevu.views.posts, name='posts'),
     
     path('tickets/', litrevu.views.ticket_list, name='ticket-list'),
     path('tickets/<int:id>/', litrevu.views.ticket_detail, name='ticket-detail'),
@@ -42,7 +44,8 @@ urlpatterns = [
 
     path('reviews/', litrevu.views.review_list, name='review-list'),
     path('reviews/<int:id>/', litrevu.views.review_detail, name='review-detail'),
-    path('reviews/add/', litrevu.views.review_create, name='review-create'),
+    path('reviews/<int:ticket_id>/add/', litrevu.views.review_create, name='review-create'),
+    path('reviews_and_ticket/add/', litrevu.views.review_and_ticket_create, name='review-and-ticket-create'),
     path('reviews/<int:id>/change/', litrevu.views.review_update, name='review-update'),
     path('reviews/<int:id>/delete/', litrevu.views.review_delete, name='review-delete'),
 

@@ -1,12 +1,7 @@
 {% extends 'base.html' %}
 {% load litrevu_extras %}
 {% block content %}
-    <a href="{% url 'ticket-create' %}">
-        <button type="button">Demander une critique</button>
-    </a>
-    <a href="{% url 'review-and-ticket-create' %}">
-        <button type="button">Créer une critique</button>
-    </a>
+    <h2>Vos posts</h2>
     <div class="grid-container">
         {% for post in posts %}
             {% if post|model_type == 'Ticket' %}

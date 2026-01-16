@@ -1,13 +1,20 @@
 {% block content %}
     <h4>Critique : {{ review.headline }}</h2>
 
-    <ul>
-        <li>Contenu : {{ review.body }}</li>
-        <li>Note : {{ review.rating }}</li>
-        {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket %}
-        </li>
-        <li>Utilisateur : {{ review.user }}</li>
-        <li>Heure de création : {{ review.time_created }}</li>
-    </ul>
+    <h5>Contenu : {{ review.body }}</li>
+    <h5>Note : {{ review.rating }}</li>
+    {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket %}
+    <h5>Utilisateur : {{ review.user }}</li>
+    <h6>Heure de création : {{ review.time_created }}</li>
+
+
+    {% if request.user == review.user %}
+        <a href="{% url 'review-update' review.id %}">
+            <button type="button">Modifier critique</button>
+        </a>
+        <a href="{% url 'review-delete' review.id %}">
+            <button type="button">Supprimer critique</button>
+        </a>
+    {% endif %}
 
 {% endblock content %}

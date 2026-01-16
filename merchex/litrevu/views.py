@@ -35,10 +35,22 @@ def home(request):
     context = {
         'posts': posts,
     }
-    for post in posts:
-        print(post)
         
     return render(request, 'litrevu/home.html', context=context)
+
+@login_required
+def posts(request):
+    tickets = Ticket.objects.filter(user=request.user)
+    reviews = Review.objects.filter(user=request.user)
+    posts = sorted(
+        chain(tickets, reviews),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+    context = {
+        'posts': posts,
+    }
+    return render(request, 'litrevu/posts.html', context=context)
 
 @login_required
 def ticket_list(request):
@@ -47,16 +59,14 @@ def ticket_list(request):
 
 @login_required
 def ticket_detail(request, id):
-    ticket =  Ticket.objects.get(id=id)
+    ticket = get_object_or_404(Ticket, id=id, user=request.user)
     return render(request,
                   'litrevu/ticket_detail.html',
                   {'ticket': ticket})
 
 @login_required
 def ticket_create(request):
-    print(request.method)
     if request.method == 'POST':
-        print("POST: ", request.POST)
         form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
             print("FILES: ", request.FILES)
@@ -74,7 +84,7 @@ def ticket_create(request):
 
 @login_required
 def ticket_update(request, id):
-    ticket = Ticket.objects.get(id=id)
+    ticket = get_object_or_404(Ticket, id=id, user=request.user)
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
@@ -90,10 +100,10 @@ def ticket_update(request, id):
 
 @login_required
 def ticket_delete(request, id):
-    ticket = Ticket.objects.get(id=id)
+    ticket = get_object_or_404(Ticket, id=id, user=request.user)
     if request.method == 'POST':
         ticket.delete()
-        return redirect('ticket-list')
+        return redirect('posts')
     return render(request, 
                   'litrevu/ticket_delete.html', 
                   {'ticket': ticket})
@@ -106,34 +116,68 @@ def review_list(request):
 
 @login_required
 def review_detail(request, id):
-    review =  Review.objects.get(id=id)
+    review = get_object_or_404(Review, id=id, user=request.user)
     return render(request,
                   'litrevu/review_detail.html',
                   {'review': review})
 
 @login_required
-def review_create(request):
-    print(request.method)
-    print(request.POST)
-    print()
+def review_create(request, ticket_id=-1):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.user = request.user
+            review.ticket = ticket
             review.save()
             return redirect('review-detail', review.id)
         else:
-            print("ERROR: ", form.errors)
+            print("ERROR review_create: ", form.errors)
     else:
         form = ReviewForm()
     return render(request,
                 'litrevu/review_create.html',
-                {'form': form})
+                {'form': form,
+                 'ticket': ticket,})
+
+@login_required
+def review_and_ticket_create(request):
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST, prefix="reviews")
+        ticket_form = TicketForm(request.POST, request.FILES, prefix="tickets")
+        if ticket_form.is_valid():
+            print("FILES: ", request.FILES)
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+        else:
+            print("ERROR ticket_form.is_valid: ", ticket_form.errors)
+        
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('review-detail', review.id)
+        else:
+            print("ERROR review_form.is_valid: ", review_form.errors)
+        
+    else:
+        review_form = ReviewForm(prefix="reviews")
+        ticket_form = TicketForm(prefix="tickets")
+    return render(request,
+                'litrevu/review_and_ticket_create.html',
+                {'review_form': review_form,
+                 'ticket_form': ticket_form,
+                 })
+
 
 @login_required
 def review_update(request, id):
-    review = Review.objects.get(id=id)
+    print("WOOAH")
+    review = get_object_or_404(Review, id=id, user=request.user)
+    ticket = review.ticket
     if request.method == 'POST':
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
@@ -145,14 +189,15 @@ def review_update(request, id):
         form = ReviewForm(instance=review)
     return render(request,
                 'litrevu/review_update.html',
-                {'form': form})
+                {'form': form,
+                 'ticket': ticket},)
 
 @login_required
 def review_delete(request, id):
-    review = Review.objects.get(id=id)
+    review = get_object_or_404(Review, id=id, user=request.user)
     if request.method == 'POST':
         review.delete()
-        return redirect('review-list')
+        return redirect('posts')
     return render(request, 
                   'litrevu/review_delete.html', 
                   {'review': review})

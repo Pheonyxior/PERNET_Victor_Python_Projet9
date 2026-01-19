@@ -1,6 +1,6 @@
 from itertools import chain
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q, CharField, Value
+from django.db.models import Q, Exists, OuterRef
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from litrevu.models import Ticket, Review, UserFollows
@@ -14,7 +14,13 @@ def home(request):
     
     reviews = Review.objects.filter(
         (Q(user=request.user) | Q(user__in=followed_users)))
-    # reviews.annotate(content_type=Value('REVIEW', CharField()))
+    
+    user_has_review = Review.objects.filter(
+        ticket=OuterRef("pk"),
+        user=request.user
+    )
+    all_tickets = Ticket.objects.all().annotate(has_my_review=Exists(user_has_review))
+    allow_map = {t.id: (not t.has_my_review) for t in all_tickets}
 
     tickets_user = Ticket.objects.filter(user=request.user)
     reviews_from_ticket_user = Review.objects.filter(
@@ -22,10 +28,12 @@ def home(request):
 
     tickets = Ticket.objects.filter(user__in=followed_users)
     
-    merge_tickets = chain(tickets, tickets_user)
+    merge_tickets = list(chain(tickets, tickets_user))
+    # allow_map = {}
     merge_tickets_and_reviews = chain(merge_tickets, reviews)
     merge_tickets_and_reviews = chain(
         merge_tickets_and_reviews, reviews_from_ticket_user)
+    
     
     posts = sorted(
         merge_tickets_and_reviews,
@@ -34,6 +42,7 @@ def home(request):
     )
     context = {
         'posts': posts,
+        'allow_map': allow_map,
     }
         
     return render(request, 'litrevu/home.html', context=context)

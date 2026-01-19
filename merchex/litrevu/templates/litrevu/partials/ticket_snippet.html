@@ -10,17 +10,20 @@
 
     {% comment %} Si l'utilisateur connecté est le même que celui qui a créé le ticket on lui permet de modifier le ticket {% endcomment %}
     {% if request.user == ticket.user %}
-        <a href="{% url 'ticket-update' ticket.id %}">
-            <button type="button">Modifier ticket</button>
-        </a>
-        <a href="{% url 'ticket-delete' ticket.id %}">
-            <button type="button">Supprimer ticket</button>
+    <a href="{% url 'ticket-update' ticket.id %}">
+        <button type="button">Modifier ticket</button>
+    </a>
+    <a href="{% url 'ticket-delete' ticket.id %}">
+        <button type="button">Supprimer ticket</button>
+    </a>
+    {% endif %}
+    
+    <p>DEBUG id={{ ticket.id }} allow={{ allow_add_review }}</p>
+    {% if allow_add_review %}
+        <a href="{% url 'review-create' ticket.id %}">
+            <button type="button">Créer une critique</button>
         </a>
     {% endif %}
-
-    <a href="{% url 'review-create' ticket.id %}">
-        <button type="button">Créer une critique</button>
-    </a>
 
 
 {% endblock content %}

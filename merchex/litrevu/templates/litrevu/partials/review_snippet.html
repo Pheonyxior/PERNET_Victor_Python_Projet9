@@ -1,21 +1,24 @@
 {% block content %}
 {% load litrevu_extras %}
-    <h4>Critique : {{ review.headline }}</h2>
-
-    <h5>Contenu : {{ review.body }}</li>
-    <h5>Note : {{ review.rating }}</li>
-    {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket allow_add_review=allow_map|get_item:review.ticket.id %}
-    <h5>Utilisateur : {{ review.user }}</li>
-    <h6>Heure de création : {{ review.time_created }}</li>
-
-
-    {% if request.user == review.user %}
-        <a href="{% url 'review-update' review.id %}">
-            <button type="button">Modifier critique</button>
-        </a>
-        <a href="{% url 'review-delete' review.id %}">
-            <button type="button">Supprimer critique</button>
-        </a>
-    {% endif %}
+    <div class="box">
+        
+        <h4>Critique : {{ review.headline }}</h2>
+        <h5>Contenu : {{ review.body }}</h5>
+        <h5>Note : {{ review.rating }}</h5>
+        {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket allow_add_review=allow_map|get_item:review.ticket.id %}
+        <div class="has-background-grey-lighter">
+        </div>
+        <h5>Utilisateur : {{ review.user }}</h5>
+        <h6>Heure de création : {{ review.time_created }}</h6>
+            
+        {% if request.user == review.user %}
+            <a href="{% url 'review-update' review.id %}">
+                <button type="button">Modifier critique</button>
+            </a>
+            <a href="{% url 'review-delete' review.id %}">
+                <button type="button">Supprimer critique</button>
+            </a>
+        {% endif %}
+    </div>
 
 {% endblock content %}

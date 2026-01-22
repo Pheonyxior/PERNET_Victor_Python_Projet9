@@ -1,4 +1,6 @@
-p {
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+
+/* p {
     background-color: rgba(177, 177, 177, 0.388);
 }
 
@@ -8,4 +10,4 @@ a {
         min-height: 50px;
         min-width: 70px;
     }
-}
+} */

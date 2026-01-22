@@ -1,30 +1,59 @@
-<html>
+{% load static %}
+<!doctype html>
+<html lang="fr">
     <head>
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'litrevu/style.css' %}">
         <title>LITRevu</title>
+        <link rel="stylesheet" href="{% static 'litrevu/style.css' %}">
         <link rel="shortcut icon" type="image/png" href="{% static 'litrevu/images/favicon.png' %}" >
-    </head>
-    <body>
-        {% if user.is_authenticated %}
-        <nav>
-            <a href="{% url 'home' %}">Flux</a>
-            <a href="{% url 'posts' %}">Posts</a>
-            {% comment %} <a href="{% url 'ticket-list' %}">Tickets</a> {% endcomment %}
-            {% comment %} <a href="{% url 'review-list' %}">Critiques</a> {% endcomment %}
-            <a href="{% url 'subscription' %}">Abonnements</a>
-        </nav>
-        {% endif %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <html data-theme="light">
+  </head>
 
-        <h1>LITRevu</h1>
+    <body>
+        <nav class="navbar has-background-light" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{% url 'home' %}">
+                    <img src="{% static 'litrevu/images/favicon.png' %}" alt="Acceuil">
+                    <h1>LITRevu</h1>
+                </a>
+
+            </div>
+
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                    <div>
+                    </div>
+                </div>
+
+                <div class="navbar-end">
+                    {% if user.is_authenticated %}
+                        <a class="navbar-item has-background-primary has-text-primary-invert" href="{% url 'home' %}">
+                            Flux
+                        </a>
+                        <a class="navbar-item has-background-primary has-text-primary-invert" href="{% url 'posts' %}">
+                            Posts
+                        </a>
+                        <a class="navbar-item has-background-primary has-text-primary-invert" href="{% url 'subscription' %}">
+                            Abonnements
+                        </a>
+                        <form method="post" action="{% url 'logout' %}">
+                            <a class="navbar-item">
+                                {% csrf_token %}
+                                <button type="submit" class="button is-ghost has-text-dark">
+                                    Se déconnecter
+                                </button>
+                            </a>
+                        </form> 
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
         {% if user.is_authenticated %}
             <p>Vous êtes connecté en tant que {{ request.user }}. 
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Disconnect</button>
-                </form>
             </p>
         {% endif %}
         {% block content %}{% endblock content %}
-    </body>
+  </body>
 </html>

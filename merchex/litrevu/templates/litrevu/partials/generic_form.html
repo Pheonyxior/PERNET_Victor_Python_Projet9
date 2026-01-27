@@ -21,20 +21,65 @@
         
         {% if form.is_bound %}
             {% if field.errors %}
-                {% render_field field class="control input is-danger" %}
+                <div class="control is-danger">
+                    {% if field.widget_type == 'textarea' %}
+                        {% render_field field class="textarea input" %}
+                    {% elif field.widget_type == 'text' %}
+                        {% render_field field class="input" %}
+                    {% elif field.widget_type == 'number' %}
+                        {% render_field field class="select" %}
+                    {% elif field.widget_type == 'clearablefile' %}
+                        {% render_field field class="input" %}
+                        {% if field.value %}
+                            <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="input" %}
+                    {% endif %}
+                </div>
                 {% for error in field.errors %}
                     <p class="help is-danger">{{ error }}</p>
                 {% endfor %}
             {% else %}
-                {% render_field field class="control input is-success" %}
+                <div class="control is-success">
+                    {% if field.widget_type == 'textarea' %}
+                        {% render_field field class="textarea input" %}
+                    {% elif field.widget_type == 'text' %}
+                        {% render_field field class="input" %}
+                    {% elif field.widget_type == 'number' %}
+                        {% render_field field class="select" %}
+                    {% elif field.widget_type == 'clearablefile' %}
+                        {% render_field field class="input" %}
+                        {% if field.value %}
+                            <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="input" %}
+                    {% endif %}
+                </div>
             {% endif %}
         {% else %}
-            DEBUG {{ field.label_tag }}
-            {% render_field field class="control input" %}
+            {% comment %} DEBUG {{field.widget_type}} {% endcomment %}
+            <div class="control">
+                {% if field.widget_type == 'textarea' %}
+                    {% render_field field class="textarea input" %}
+                {% elif field.widget_type == 'text' %}
+                    {% render_field field class="input" %}
+                {% elif field.widget_type == 'number' %}
+                    {% render_field field class="select" %}
+                {% elif field.widget_type == 'clearablefile' %}
+                    {% render_field field class="input" %}
+                    {% if field.value %}
+                        <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                    {% endif %}
+                {% else %}
+                    {% render_field field class="input" %}
+                {% endif %}
+            </div>
         {% endif %}
         
         {% if field.help_text %}
-        <small class="help has-text-primary-15">{{ field.help_text }}</small>
+            <small class="help has-text-primary-15">{{ field.help_text }}</small>
         {% endif %}
     </div>
     {% endfor %}

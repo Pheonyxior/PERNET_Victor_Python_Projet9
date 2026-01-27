@@ -89,7 +89,7 @@ def ticket_create(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            return redirect('home', ticket.id)
+            return redirect('home')
         else:
             print("ERROR: ", form.errors)
     else:
@@ -147,7 +147,7 @@ def review_create(request, ticket_id=-1):
             review.user = request.user
             review.ticket = ticket
             review.save()
-            return redirect('home', review.id)
+            return redirect('home')
         else:
             print("ERROR review_create: ", form.errors)
     else:

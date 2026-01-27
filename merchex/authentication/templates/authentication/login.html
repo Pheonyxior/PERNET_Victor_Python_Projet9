@@ -1,56 +1,18 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
+{% load litrevu_extras %}
 {% block content %}
-    {% if form.errors %}
-        {{ form.errors }}
-    {% endif %}
-    
     <nav class="is-vcentered">
-        <section class="hero level-right mt-6">
+        <section class="section hero level-right">
             <div class="hero-body">
                 <form method="post" class="subtitle">
-                    {% csrf_token %}
-                    {% for hidden_field in form.hidden_fields %}
-                        {{ hidden_field }}
-                    {% endfor %}
-                    
-                    {% if form.non_field_errors %}
-                    <div class="help is-danger">
-                        {% for error in form.non_field_errors %}
-                        {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    
-                    {% for field in form.visible_fields %}
-                    <div class="field">
-                        <label class="label">{{ field.label_tag }}</label>
-                        
-                        {% if form.is_bound %}
-                            {% if field.errors %}
-                                {% render_field field class="control input is-danger" %}
-                                {% for error in field.errors %}
-                                    <p class="help is-danger">{{ error }}</p>
-                                {% endfor %}
-                            {% else %}
-                                {% render_field field class="control input is-success" %}
-                            {% endif %}
-                        {% else %}
-                            {% render_field field class="control input" %}
-                        {% endif %}
-                        
-                        {% if field.help_text %}
-                        <small class="help has-text-primary-15">{{ field.help_text }}</small>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <button type="submit" class="title">
+                    {% include 'litrevu/partials/generic_form.html' with form=form %}
+                    <button type="submit" class="title mt-3">
                         Se connecter
                     </button> 
                 </form>
             </div>
         </section>
-        <section class="hero is-primary level-left">
+        <section class="section hero is-primary level-left">
             <div class="hero-body">
                 <p class="subtitle">Pas encore membre ? </p>
                 <a class="title" href="{% url 'signup' %}">Inscrivez-vous maintenant !</a>

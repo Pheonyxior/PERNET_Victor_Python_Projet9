@@ -4,14 +4,13 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 
-from litrevu.models import Ticket, Review, UserFollows
+from litrevu.models import Ticket, Review, UserFollows, UserBlocks
 
 User = get_user_model()
 
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-    #  fields = '__all__'
         exclude = ('user',)
 
 class ReviewForm(forms.ModelForm):
@@ -37,7 +36,7 @@ class SubscriptionForm(forms.ModelForm):
             -> that the user choice exists
             -> that the user choice is not already in the followed list
         """
-        user = self.cleaned_data['username']
+        user = self.cleaned_data["username"]
 
         try:
             followed_user = User.objects.get(username=user)
@@ -54,11 +53,55 @@ class SubscriptionForm(forms.ModelForm):
                         + ' déjà suivi !'
                     raise ValidationError(message)
         except User.DoesNotExist:
-            message = user + " n'est pas défini !"
+            message = user + " n'existe pas !"
             raise ValidationError(message)
 
         return user
 
     class Meta:
         model = UserFollows
+        fields = ["username"]
+
+
+class BlockingForm(forms.ModelForm):
+    username = forms.CharField(
+        widget=forms.widgets.TextInput(
+            attrs={'placeholder': "Nom d'utilisateur"}))
+
+
+    def __init__(self, user, *args, **kwargs):
+        """ set the connected user """
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_username(self):
+        """ check
+            -> if the connected user is not the user choice
+            -> that the user choice exists
+            -> that the user choice is not already in the blocked list
+        """
+        user = self.cleaned_data['username']
+
+        try:
+            blocked_user = User.objects.get(username=user)
+            if blocked_user == self.user:
+                message = 'Vous ne pouvez pas vous bloquer !'
+                raise ValidationError(message)
+            else:
+                try:
+                    user_block = UserBlocks.objects.create(
+                        user=self.user, blocked_user=blocked_user)
+                    user_block.save()
+                except IntegrityError:
+                    message = 'Désolé: ' + blocked_user.username\
+                        + ' déjà bloqué !'
+                    raise ValidationError(message)
+        except User.DoesNotExist:
+            message = user + " n'existe pas !"
+            raise ValidationError(message)
+
+        return user
+
+    class Meta:
+        model = UserBlocks
         fields = ['username']

@@ -1,24 +1,46 @@
 {% block content %}
 {% load litrevu_extras %}
-    <div class="box">
-        
-        <h4>Critique : {{ review.headline }}</h2>
-        <h5>Contenu : {{ review.body }}</h5>
-        <h5>Note : {{ review.rating }}</h5>
-        {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket allow_add_review=allow_map|get_item:review.ticket.id %}
-        <div class="has-background-grey-lighter">
+ <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">{{ review.headline }}</p>
+            <span class="card-header-icon">
+                {% for i in '12345'|make_list %}
+                    {%  if forloop.counter < review.rating %}
+                        <i class="fa fa-star has-text-warning"></i>
+                    {% else %}
+                        <i class="fa fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </span>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <p>{{ review.body }}</p>
+                <br />
+                <p>Répond à :</p>
+                <div class="ml-5">
+                    {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket allow_add_review=allow_map|get_item:review.ticket.id %}
+                </div>
+                <br />
+                <time>{{review.time_created}}</time>
+                {% if request.user == review.user %}
+                    <p> Vous avez publié cette critique.</p>
+                {% else %}
+                    <p> {{ review.user }} a publié cette critique</p>
+                {% endif %}
+            </div>
         </div>
-        <h5>Utilisateur : {{ review.user }}</h5>
-        <h6>Heure de création : {{ review.time_created }}</h6>
-            
         {% if request.user == review.user %}
-            <a href="{% url 'review-update' review.id %}">
-                <button type="button">Modifier critique</button>
+        <footer class="card-footer">
+            <a class="card-footer-item" href="{% url 'review-update' review.id %}">
+                <button class="button is-light" type="button">Modifier critique</button>
             </a>
-            <a href="{% url 'review-delete' review.id %}">
-                <button type="button">Supprimer critique</button>
+            <a class="card-footer-item" href="{% url 'review-delete' review.id %}">
+                <button class="button is-danger" type="button">Supprimer critique</button>
             </a>
+        </footer>
         {% endif %}
     </div>
-
 {% endblock content %}

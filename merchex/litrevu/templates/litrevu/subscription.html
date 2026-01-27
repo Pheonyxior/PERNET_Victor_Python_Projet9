@@ -1,56 +1,142 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% block content %}
-<div class = 'subscription'>
-    <div class = 'div_title'>Suivre d'autres utilisateurs</div>
-    <div class = 'div_form'>
-        <form method="post">            
-            {% csrf_token %}
-            <div>{{form.username}}</div>
-            <div>
-                <button class="btn" type="submit" >Envoyer</button>     
-            </div>            
-        </form>
-        <div class ="subscription__message">
-            {% if form.errors %}
-                <!-- {{ form.errors }} -->
-                {% for field in form %}
-                    {% for error in field.errors %}
-                    <strong>{{ error|escape }}</strong>
+<section class="section">
+    <div class="block">
+        <div class = 'box'>
+            <form action="{% url 'subscription' %}" method="post">            
+                {% csrf_token %}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                {% endfor %}
+                
+                {% if form.non_field_errors %}
+                <div class="help is-danger">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
                     {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% for field in form.visible_fields %}
+                <div class="field">
+                   <label class="label">Suivre d'autres utilisateurs</label>
+                    {% if form.is_bound %}
+                        {% if field.errors %}
+                            {% render_field field class="control input is-danger" %}
+                            {% for error in field.errors %}
+                                <p class="help is-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% else %}
+                            {% render_field field class="control input is-success" %}
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="control input" %}
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                    <small class="help has-text-primary-15">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
                 {% endfor %}
-            {% endif %}
+                <div>
+                    <button class="button is-primary" type="submit" >Suivre</button>     
+                </div>            
+            </form>
+        </div>
+        <div class="">
+            <div class="mb-2">
+                <div class="is-size-4">Abonné(e)s</div>
+                <table class="table">
+                    <tbody>
+                        {% for followed_user in followed_users %}
+                        <tr>
+                            <td class="has-text-centered is-vcentered">{{followed_user.followed_user}}</td>
+                            <td><a href="{% url 'unsubscription' followed_user.id %}"><button class="button is-light" type="button">
+                                Désabonner</button></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="">
+                <div class="is-size-4">Abonnements</div>
+                <table class="table">
+                    <tbody>
+                        {% for subscriber_user in subscriber_users %}
+                        <tr>
+                            <td>{{subscriber_user.user}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="subscription__lists">
-        <div class="subscription__lists__subscriptions">
-            <div class = 'div_title'>Abonnements</div>
-            <table>
-                <!-- for each followed user -->
-                {% for followed_user in followed_users %}
-                <tr>
-                    <td>{{followed_user.followed_user}}</td>
-                    <td><a href="{% url 'unsubscription' followed_user.id %}"><button class="btn" type="button">
-                        Désabonner</button></a>
-                    </td>
-                </tr>
+
+    <div class="block">
+        <div class = "box">
+            <form action="{% url 'block' %}" method="post">            
+                {% csrf_token %}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
                 {% endfor %}
-            </table>
+                
+                {% if form.non_field_errors %}
+                <div class="help is-danger">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% for field in form.visible_fields %}
+                <div class="field">
+                    <label class="label">Bloquer d'autres utilisateurs </label>
+                    {% if form.is_bound %}
+                        {% if field.errors %}
+                            {% render_field field class="control input is-danger" %}
+                            {% for error in field.errors %}
+                                <p class="help is-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% else %}
+                            {% render_field field class="control input is-success" %}
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="control input" %}
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                    <small class="help has-text-primary-15">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <div>
+                    <button class="button is-danger" type="submit" >Bloquer</button>     
+                </div>            
+            </form>
         </div>
-        <div class="subscription__lists__subscribers">
-            <div class = 'div_title'>Abonnés</div>
-            <table>
-                <!-- for each subscribers user -->
-                {% for subscriber_user in subscriber_users %}
-                <tr>
-                    <td>{{subscriber_user.user}}</td>
-                    {% comment %} <td><a href="{% url 'unsubscription' subscriber_user.id %}"><button class="btn" type="button">
-                        Désabonner</button></a>
-                    </td> {% endcomment %}
-                </tr>
-                {% endfor %}
+        <div class="">
+            <div class = 'is-size-4'>Utilisateurs bloqués</div>
+            <table class="table">
+                <tbody>
+                    {% for blocked_user in blocked_users %}
+                    <tr>
+                        <td class="has-text-centered is-vcentered">{{blocked_user.blocked_user}}</td>
+                        <td>
+                            <a href="{% url 'unblock' blocked_user.id %}">
+                                <button class="button is-light" type="button">Débloquer</button></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
-</div>
+</section>
 
 {% endblock %}
+
+
+

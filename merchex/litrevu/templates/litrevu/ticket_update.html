@@ -2,12 +2,15 @@
 
 {% block content %}
 
-<h1>Modification d'un ticket</h1>
+<section class="section">
+    <p class="block is-size-3">Modification d'un ticket</p>
 
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value"Envoyer">
-</form>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="box">
+        {% include 'litrevu/partials/generic_form.html' with form=form %}
+        </div>
+        <button class="button is-primary" type="submit" >Confirmer</button>  
+    </form>
+</section>
 
 {% endblock %}

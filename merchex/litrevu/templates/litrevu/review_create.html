@@ -2,21 +2,18 @@
 
 {% block content %}
 
-<h1>Créer une critique</h1>
+<section class="section">
+    <p class="block is-size-3">Créer une critique</p>
 
-<h4>Ticket : {{ ticket.title}} </h4>
-<h5>Description : {{ticket.description}} </h5>
-<h5>Utilisateur : {{ticket.user}} </h5>
-{% if ticket.image %}
-    <img src="{{ ticket.image.url }}" alt="Couverture du livre">
-{% endif %}
-<h6>Posté le : {{ticket.time_created}} </h6>
+    {% include 'litrevu/partials/ticket_snippet.html' with ticket=ticket allow_add_review=False %}
 
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="box">
+        {% include 'litrevu/partials/generic_form.html' with form=form %}
+        </div>
 
-    <input type="submit" value="Envoyer">
-</form>
+        <button class="button is-primary" type="submit" >Confirmer</button>  
+    </form>
+</section>
 
 {% endblock %}

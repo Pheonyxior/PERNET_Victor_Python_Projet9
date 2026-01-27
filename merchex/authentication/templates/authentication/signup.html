@@ -1,45 +1,11 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
+{% load litrevu_extras %}
 {% block content %}
     <div class="box ml-2">
         <h2 class="title is-2">Inscription</h2>
-        <section></section>
         <form method="post">
             {% csrf_token %}
-            {% for hidden_field in form.hidden_fields %}
-                {{ hidden_field }}
-            {% endfor %}
-            
-            {% if form.non_field_errors %}
-            <div class="help is-danger">
-                {% for error in form.non_field_errors %}
-                {{ error }}
-                {% endfor %}
-            </div>
-            {% endif %}
-            
-            {% for field in form.visible_fields %}
-            <div class="field">
-                <label class="label">{{ field.label_tag }}</label>
-                
-                {% if form.is_bound %}
-                    {% if field.errors %}
-                        {% render_field field class="control input is-danger" %}
-                        {% for error in field.errors %}
-                            <p class="help is-danger">{{ error }}</p>
-                        {% endfor %}
-                    {% else %}
-                        {% render_field field class="control input is-success" %}
-                    {% endif %}
-                {% else %}
-                    {% render_field field class="control input" %}
-                {% endif %}
-                
-                {% if field.help_text %}
-                <small class="help has-text-primary-15">{{ field.help_text }}</small>
-                {% endif %}
-            </div>
-            {% endfor %}
+            {% include 'litrevu/partials/generic_form.html' with form=form %}
             <div class="is-flex">
                 <button class="button is-primary" type="submit">S’inscrire</button>
                 <a href="{% url 'login' %}">

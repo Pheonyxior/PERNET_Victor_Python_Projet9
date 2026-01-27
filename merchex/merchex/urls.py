@@ -52,6 +52,9 @@ urlpatterns = [
     # path('user_follows/', litrevu.views.user_follows_list, name='user_follows-list'),
     path('subscribe', litrevu.views.subscription, name='subscription'),
     path('unsubscribe/<int:id>/', litrevu.views.unsubscribe, name='unsubscription'),
+
+    path('block', litrevu.views.block, name='block'),
+    path('unblock/<int:id>/', litrevu.views.unblock, name='unblock'),
     ]
 
 if settings.DEBUG:

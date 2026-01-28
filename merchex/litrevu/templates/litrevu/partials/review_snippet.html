@@ -3,7 +3,7 @@
  <link rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="card">
-        <header class="card-header">
+        <header class="card-header has-background-primary has-text-primary-invert">
             <p class="card-header-title">{{ review.headline }}</p>
             <span class="card-header-icon">
                 {% for i in '12345'|make_list %}
@@ -15,7 +15,7 @@
                 {% endfor %}
             </span>
         </header>
-        <div class="card-content">
+        <div class="card-content has-background-primary-soft has-text-primary-invert">
             <div class="content">
                 <p>{{ review.body }}</p>
                 <br />
@@ -33,9 +33,9 @@
             </div>
         </div>
         {% if request.user == review.user %}
-        <footer class="card-footer">
+        <footer class="card-footer has-background-white-ter">
             <a class="card-footer-item" href="{% url 'review-update' review.id %}">
-                <button class="button is-light" type="button">Modifier critique</button>
+                <button class="button is-white" type="button">Modifier critique</button>
             </a>
             <a class="card-footer-item" href="{% url 'review-delete' review.id %}">
                 <button class="button is-danger" type="button">Supprimer critique</button>

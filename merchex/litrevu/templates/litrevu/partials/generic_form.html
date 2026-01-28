@@ -31,7 +31,7 @@
                     {% elif field.widget_type == 'clearablefile' %}
                         {% render_field field class="input" %}
                         {% if field.value %}
-                            <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                            <img class="mt-4" src="{{ field.value.url }}" alt="Miniature du média"/>
                         {% endif %}
                     {% else %}
                         {% render_field field class="input" %}
@@ -51,7 +51,7 @@
                     {% elif field.widget_type == 'clearablefile' %}
                         {% render_field field class="input" %}
                         {% if field.value %}
-                            <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                            <img class="mt-4" src="{{ field.value.url }}" alt="Miniature du média"/>
                         {% endif %}
                     {% else %}
                         {% render_field field class="input" %}
@@ -70,7 +70,7 @@
                 {% elif field.widget_type == 'clearablefile' %}
                     {% render_field field class="input" %}
                     {% if field.value %}
-                        <img class="mt-4" src="{{ field.value.url }}" alt="Media Cover"/>
+                        <img class="mt-4" src="{{ field.value.url }}" alt="Miniature du média"/>
                     {% endif %}
                 {% else %}
                     {% render_field field class="input" %}

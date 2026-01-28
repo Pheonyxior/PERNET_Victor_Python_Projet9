@@ -73,12 +73,6 @@ def ticket_list(request):
     tickets = Ticket.objects.filter(user=request.user)
     return render(request, 'litrevu/ticket_list.html', {'tickets': tickets})
 
-@login_required
-def ticket_detail(request, id):
-    ticket = get_object_or_404(Ticket, id=id, user=request.user)
-    return render(request,
-                  'litrevu/ticket_detail.html',
-                  {'ticket': ticket})
 
 @login_required
 def ticket_create(request):
@@ -130,12 +124,6 @@ def review_list(request):
     reviews = Review.objects.filter(user=request.user)
     return render(request, 'litrevu/review_list.html', {'reviews': reviews})
 
-@login_required
-def review_detail(request, id):
-    review = get_object_or_404(Review, id=id, user=request.user)
-    return render(request,
-                  'litrevu/posts.html',
-                  {'review': review})
 
 @login_required
 def review_create(request, ticket_id=-1):
@@ -228,18 +216,20 @@ def subscription(request):
     user_follows = UserFollows.objects.filter(
         Q(user=request.user) & ~Q(followed_user__in=blocked_users))
     subscriber_users = UserFollows.objects.filter(
-        Q(followed_user=request.user) & ~Q(followed_user__in=blocked_users))
+        Q(followed_user=request.user) & ~Q(user__in=blocked_users))
     if request.method == 'POST':
-        form = SubscriptionForm(request.user, request.POST)
-        if form.is_valid():
+        sub_form = SubscriptionForm(request.user, request.POST)
+        block_form = BlockingForm(request.user)
+        if sub_form.is_valid():
             messages.info(request,
                           'Utilisateur '
                           + request.POST.get('username') + ' suivi')
     else:
-        form = SubscriptionForm(request.user)
+        sub_form = SubscriptionForm(request.user)
+        block_form = BlockingForm(request.user)
     context = { 'followed_users': user_follows,
                 'subscriber_users': subscriber_users,
-                'blocked_users': user_blocks} | {'form': form}
+                'blocked_users': user_blocks} | {'sub_form': sub_form, 'block_form': block_form}
     return render(request, 
                  "litrevu/subscription.html",
                   context=context)
@@ -260,18 +250,20 @@ def block(request):
     user_follows = UserFollows.objects.filter(
         Q(user=request.user) & ~Q(followed_user__in=blocked_users))
     subscriber_users = UserFollows.objects.filter(
-        Q(followed_user=request.user) & ~Q(followed_user__in=blocked_users))
+        Q(followed_user=request.user) & ~Q(user__in=blocked_users))
     if request.method == 'POST':
-        form = BlockingForm(request.user, request.POST)
-        if form.is_valid():
+        block_form = BlockingForm(request.user, request.POST)
+        sub_form = SubscriptionForm(request.user)
+        if block_form.is_valid():
             messages.info(request,
                           'Utilisateur '
                           + request.POST.get('username') + ' bloqué')
     else:
-        form = BlockingForm(request.user)
+        sub_form = SubscriptionForm(request.user)
+        block_form = BlockingForm(request.user)
     context = { 'followed_users': user_follows,
                 'subscriber_users': subscriber_users,
-                'blocked_users': user_blocks, } | {'form': form}
+                'blocked_users': user_blocks} | {'sub_form': sub_form, 'block_form': block_form}
     return render(request, 
                  "litrevu/subscription.html",
                   context=context)

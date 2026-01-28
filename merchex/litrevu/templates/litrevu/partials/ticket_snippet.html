@@ -1,13 +1,13 @@
 {% block content %}
     <div class="card">
-        <header class="card-header">
+        <header class="card-header has-background-primary">
             <p class="card-header-title">{{ ticket.title }}</p>
         </header>
         <div class="card-content">
             <div class="content">
                 <p>{{ ticket.description }}</p>
                 {% if ticket.image %}
-                    <img class="card-image" src="{{ ticket.image.url }}" alt="Couverture du livre">
+                    <img class="card-image" src="{{ ticket.image.url }}" alt="Miniature du média">
                 {% endif %}
                 <br />
                 
@@ -23,6 +23,12 @@
         </div>
         {% if request.user == ticket.user or allow_add_review %}
             <footer class="card-footer">
+                {% if allow_add_review %}
+                    <a class="card-footer-item" href="{% url 'review-create' ticket.id %}">
+                        <button class="button is-primary" type="button">Créer une critique</button>
+                    </a>
+                {% endif %}
+                
                 {% if request.user == ticket.user %}
                     <a class="card-footer-item" href="{% url 'ticket-update' ticket.id %}">
                         <button class="button is-light" type="button">Modifier</button>
@@ -31,12 +37,7 @@
                         <button class="button is-danger" type="button">Supprimer</button>
                     </a>
                     {% endif %}
-                    
-                {% if allow_add_review %}
-                    <a class="card-footer-item" href="{% url 'review-create' ticket.id %}">
-                        <button class="button is-primary" type="button">Créer une critique</button>
-                    </a>
-                {% endif %}
+                
             </footer>
         {% endif %}
     </div>

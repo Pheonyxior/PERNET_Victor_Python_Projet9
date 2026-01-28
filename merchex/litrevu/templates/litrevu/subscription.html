@@ -6,22 +6,22 @@
         <div class = 'box'>
             <form action="{% url 'subscription' %}" method="post">            
                 {% csrf_token %}
-                {% for hidden_field in form.hidden_fields %}
+                {% for hidden_field in sub_form.hidden_fields %}
                     {{ hidden_field }}
                 {% endfor %}
                 
-                {% if form.non_field_errors %}
+                {% if sub_form.non_field_errors %}
                 <div class="help is-danger">
-                    {% for error in form.non_field_errors %}
+                    {% for error in sub_form.non_field_errors %}
                     {{ error }}
                     {% endfor %}
                 </div>
                 {% endif %}
                 
-                {% for field in form.visible_fields %}
+                {% for field in sub_form.visible_fields %}
                 <div class="field">
                    <label class="label">Suivre d'autres utilisateurs</label>
-                    {% if form.is_bound %}
+                    {% if sub_form.is_bound %}
                         {% if field.errors %}
                             {% render_field field class="control input is-danger" %}
                             {% for error in field.errors %}
@@ -79,38 +79,38 @@
         <div class = "box">
             <form action="{% url 'block' %}" method="post">            
                 {% csrf_token %}
-                {% for hidden_field in form.hidden_fields %}
+                {% for hidden_field in block_form.hidden_fields %}
                     {{ hidden_field }}
                 {% endfor %}
                 
-                {% if form.non_field_errors %}
+                {% if block_form.non_field_errors %}
                 <div class="help is-danger">
-                    {% for error in form.non_field_errors %}
+                    {% for error in block_form.non_field_errors %}
                     {{ error }}
                     {% endfor %}
                 </div>
                 {% endif %}
                 
-                {% for field in form.visible_fields %}
-                <div class="field">
-                    <label class="label">Bloquer d'autres utilisateurs </label>
-                    {% if form.is_bound %}
-                        {% if field.errors %}
-                            {% render_field field class="control input is-danger" %}
-                            {% for error in field.errors %}
-                                <p class="help is-danger">{{ error }}</p>
-                            {% endfor %}
+                {% for field in block_form.visible_fields %}
+                    <div class="field">
+                        <label class="label">Bloquer d'autres utilisateurs </label>
+                        {% if block_form.is_bound %}
+                            {% if field.errors %}
+                                {% render_field field class="control input is-danger" %}
+                                {% for error in field.errors %}
+                                    <p class="help is-danger">{{ error }}</p>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field field class="control input is-success" %}
+                            {% endif %}
                         {% else %}
-                            {% render_field field class="control input is-success" %}
+                            {% render_field field class="control input"%}
                         {% endif %}
-                    {% else %}
-                        {% render_field field class="control input" %}
-                    {% endif %}
-                    
-                    {% if field.help_text %}
-                    <small class="help has-text-primary-15">{{ field.help_text }}</small>
-                    {% endif %}
-                </div>
+                        
+                        {% if field.help_text %}
+                        <small class="help has-text-primary-15">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
                 {% endfor %}
                 <div>
                     <button class="button is-danger" type="submit" >Bloquer</button>     

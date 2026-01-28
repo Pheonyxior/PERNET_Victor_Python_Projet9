@@ -37,13 +37,11 @@ urlpatterns = [
     path('posts/', litrevu.views.posts, name='posts'),
     
     path('tickets/', litrevu.views.ticket_list, name='ticket-list'),
-    path('tickets/<int:id>/', litrevu.views.ticket_detail, name='ticket-detail'),
     path('tickets/add/', litrevu.views.ticket_create, name='ticket-create'),
     path('tickets/<int:id>/change/', litrevu.views.ticket_update, name='ticket-update'),
     path('tickets/<int:id>/delete/', litrevu.views.ticket_delete, name='ticket-delete'),
 
     path('reviews/', litrevu.views.review_list, name='review-list'),
-    path('reviews/<int:id>/', litrevu.views.review_detail, name='review-detail'),
     path('reviews/<int:ticket_id>/add/', litrevu.views.review_create, name='review-create'),
     path('reviews_and_ticket/add/', litrevu.views.review_and_ticket_create, name='review-and-ticket-create'),
     path('reviews/<int:id>/change/', litrevu.views.review_update, name='review-update'),

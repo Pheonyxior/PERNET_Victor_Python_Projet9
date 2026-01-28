@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Supprimer le ticket</h1>
-    <p>Êtes-vous sûr de vouloir supprimer le ticket : {{ ticket.title }} ?</p>
-
-    <form action="" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Supprimer">
-    </form>
+    <section class="section">
+        <div class="box has-text-centered">
+            <p class="block is-size-3">Êtes-vous sûr de vouloir supprimer votre demande de critique: {{ ticket.title }} ?</p>
+            <div class="block">
+                <form class="block" action="" method="post">
+                    {% csrf_token %}
+                    <button class="button is-large is-danger" type="submit">Supprimer demande</button>
+                </form>
+            </div>
+        </div>
+    </section>
 {% endblock %}

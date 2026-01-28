@@ -5,20 +5,22 @@
     <div class="card">
         <header class="card-header has-background-primary has-text-primary-invert">
             <p class="card-header-title">{{ review.headline }}</p>
-            <span class="card-header-icon">
+            <span class="card-header-icon has-background-primary-30 mr-4">
                 {% for i in '12345'|make_list %}
                     {%  if forloop.counter <= review.rating %}
-                        <i class="fa fa-star has-text-warning"></i>
+                        <i class="fa fa-star has-text-warning ml-1"></i>
                     {% else %}
-                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star has-text-warning-light ml-1"></i>
                     {% endif %}
                 {% endfor %}
             </span>
         </header>
         <div class="card-content has-background-primary-soft has-text-primary-invert">
             <div class="content">
-                <p>{{ review.body }}</p>
-                <br />
+                {% if review.body %}
+                    <p>{{ review.body }}</p>
+                    <br />
+                {% endif %}
                 <p>Répond à :</p>
                 <div class="ml-5">
                     {% include 'litrevu/partials/ticket_snippet.html' with ticket=review.ticket allow_add_review=allow_map|get_item:review.ticket.id %}
@@ -33,7 +35,7 @@
             </div>
         </div>
         {% if request.user == review.user %}
-        <footer class="card-footer has-background-white-ter">
+        <footer class="card-footer has-background-primary-75">
             <a class="card-footer-item" href="{% url 'review-update' review.id %}">
                 <button class="button is-white" type="button">Modifier critique</button>
             </a>

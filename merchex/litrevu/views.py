@@ -163,7 +163,7 @@ def review_and_ticket_create(request):
             review.user = request.user
             review.ticket = ticket
             review.save()
-            return redirect('home', review.id)
+            return redirect('home')
         else:
             print("ERROR review_form.is_valid: ", review_form.errors)
         
